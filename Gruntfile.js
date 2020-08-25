@@ -5,8 +5,8 @@ var git_info = getRepoInfo();
 let version_hash = git_info.branch + '.' + git_info.abbreviatedSha;
 
 let configuration = {
-    'css_build_file': `styles/css/build/build.${version_hash}.min.css`,
-    'css_min_build_file': `styles/css/build/build.${version_hash}.css`,
+    'css_build_file': `styles/css/build/build.${version_hash}.css`,
+    'css_min_build_file': `styles/css/build/build.${version_hash}.min.css`,
 };
 
 let replacement_list = [];
@@ -21,20 +21,41 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         // Clean up build directory
-        clean: ['public/'],
+        clean: {
+            css: ['public/styles/css/build'],
+            all: ['public/']
+        },
 
+        // Font manager
+        googlefonts: {
+            build: {
+                options: {
+                    fontPath: 'public/styles/css/fonts/',
+                    cssFile: 'public/styles/css/fonts.css',
+                    fonts: [{
+                        family: 'Open Sans',
+                        styles: [
+                            400, 700
+                        ],
+                        subsets: [
+                            'latin',
+                        ],
+                    }]
+                }
+            }
+        },
         // For development purpouse.
         watch: {
             sass: {
-                files: ['src/sass/**.sass'],
-                tasks: ['sass'],
+                files: ['src/sass/**/*.sass'],
+                tasks: ['clean:css', 'sass', 'concat:css', 'cssmin'],
                 options: {
                     spawn: false,
                     livereload: true,
                 },
             },
             html: {
-                files: ['src/html/**.html'],
+                files: ['src/html/**/*.html'],
                 tasks: ['htmlmin', 'string-replace:html'],
                 options: {
                     spawn: false,
@@ -60,7 +81,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src/sass/',
-                    src: ['**.sass'],
+                    src: ['**/*.sass'],
                     dest: './public/styles/css',
                     ext: '.css'
                 }]
@@ -86,7 +107,7 @@ module.exports = function (grunt) {
         // Concatenate files
         concat: {
             css: {
-                src: ['public/styles/css/**.css'],
+                src: ['public/styles/css/**/*.css'],
                 dest: `public/${configuration.css_build_file}`
             }
         },
@@ -114,7 +135,22 @@ module.exports = function (grunt) {
                     replacements: replacement_list
                 }
             }
-        }
+        },
+
+        copy: {
+            fonts: {
+                files: [
+                    // includes files within path
+                    {
+                        cwd: 'public/styles/css/',
+                        expand: true,
+                        src: ['fonts'],
+                        dest: 'build',
+                    }
+                ],
+            },
+        },
+
     });
 
     grunt.loadNpmTasks('grunt-contrib-clean');
@@ -124,10 +160,11 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
     grunt.loadNpmTasks('grunt-string-replace');
-
+    grunt.loadNpmTasks('grunt-google-fonts');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
-    let build_tasks = ['clean', 'sass', 'htmlmin', 'concat', 'cssmin', 'string-replace'];
+    let build_tasks = ['clean', 'sass', 'htmlmin', 'googlefonts', 'concat', 'cssmin', 'string-replace', 'copy'];
 
     grunt.registerTask('default', build_tasks);
 
