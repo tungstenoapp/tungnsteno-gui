@@ -83,41 +83,16 @@
     </div>
 
 
+    <script type="text/javascript" src="/eel.js"></script>
+
     <script type="text/javascript">
         window.onload = (function () {
             let bodyElement = document.getElementsByTagName('body')[0];
             let evaluator;
 
-            if (typeof py_tsteno_eval != 'undefined') {
-                evaluator = py_tsteno_eval;
-            } else {
-                evaluator = function (code, callback) {
-                    setTimeout(function () {
-                        switch (code) {
-                            case 'TestPlot':
-                                callback({
-                                    intervals: [
-                                        [-10, 10]
-                                    ],
-                                    functions: [function (x) {
-                                        return x * x;
-                                    }],
-                                    processor: 'plot',
-                                });
-                                break;
-                            default:
-                                callback({
-                                    processor: 'default',
-                                    output: code
-                                });
-                                break;
-                        }
-                    }, 2000);
-                };
-            }
             let options = {
                 app: bodyElement.dataset.app,
-                evaluator,
+                evaluator: eel.tsteno_eval
             }
 
             window.tungsteno = new Tungsteno(options);

@@ -27,12 +27,13 @@ class Cell {
     evaluate() {
         this.loading = true;
 
-        this.evaluator(this.input, function (result) {
+        this.evaluator(this.input)(function (result) {
             if (this.processors.hasOwnProperty(result.processor)) {
                 this.processors[result.processor].eval(result, this);
             }
 
             this.loading = false;
+
         }.bind(this));
 
         this.notebook.createCellIfNeeded(this);
