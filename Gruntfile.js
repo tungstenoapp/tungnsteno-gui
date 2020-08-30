@@ -106,6 +106,9 @@ module.exports = function (grunt) {
         },
 
         uglify: {
+            options: {
+                mangle: false
+            },
             vendor: {
                 files: {
                     [`public/${configuration.js_min_build_vendor}`]: [

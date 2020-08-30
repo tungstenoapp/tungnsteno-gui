@@ -18,20 +18,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
     </style>
     <link rel="stylesheet" href="%css_min_build_file%">
-
-
-    <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({  "HTML-CSS": {
-            preferredFont: "STIX"
-          }, tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-      </script>
-    <script type="text/javascript" async
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-    </script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="%js_min_build_vendor%" type="text/javascript"></script>
     <script src="%js_min_build_app%" type="text/javascript"></script>
-
 </head>
 
 <body data-app="notebook">
@@ -60,27 +49,37 @@
                         <li class="run-cell" v-on:click="cell.evaluate()" v-if="!cell.loading"><i
                                 class="fas fa-play"></i>
                         </li>
-                        <li class="stop-cell" v-on:click="cell.evaluate()" v-if="cell.loading"><i
+                        <!--
+                 <li class="stop-cell" v-on:click="cell.evaluate()" v-if="cell.loading"><i
                                 class="fas fa-stop"></i>
                         </li>
+                        -->
+
                         <li class="run-visibility" v-on:click="cell.hideInput()"><i class="far fa-eye"></i></li>
+                        <!--
                         <li class="run-settings"><i class="fas fa-cog"></i></li>
+                        -->
                     </ul>
                 </div>
 
 
-                <contenteditable v-if="!cell.hide_input" class="input" tag="div" :contenteditable="true"
-                    v-model="cell.input" @keyup.shift.13="cell.evaluate" @keypress="disableShiftEnter">
+                <contenteditable spellcheck="false" v-if="!cell.hide_input" class="input" tag="div"
+                    :contenteditable="true" v-model="cell.input" @keyup.shift.13="cell.evaluate"
+                    @keypress="disableShiftEnter">
                 </contenteditable>
 
                 <transition name="fade">
-                    <div class="output" spellcheck="false" v-if="cell.output_type != null || cell.loading">
+                    <div v-bind:class="'cell_container_' + cell.output_type" class="output"
+                        v-if="cell.output_type != null || cell.loading">
                         <sync-loader style="text-align: center; padding: 10px" :loading="cell.loading" :size="5"
                             :sizeUnit="px" :color="loading_color"></sync-loader>
                         <template v-if="!cell.loading">
-                            <template v-if="cell.output_type == 'default'">
+                            <div v-html="cell.output" v-if="cell.output_type == 'default'">
                                 {{ cell.output }}
-                            </template>
+                            </div>
+                            <div v-html="cell.output" class="error" v-if="cell.output_type == 'error'">
+                                {{ cell.output }}
+                            </div>
                             <template v-if="cell.output_type == 'plot'">
                                 <plotly :data="cell.plot.data" :options="cell.plot.options"></plotly>
                             </template>
@@ -92,6 +91,7 @@
     </div>
 
 
+
     <script type="text/javascript" src="/eel.js"></script>
 
     <script type="text/javascript">
@@ -99,9 +99,24 @@
             let bodyElement = document.getElementsByTagName('body')[0];
             let evaluator;
 
+            if (typeof eel !== 'undefined') {
+                evaluator = eel.tsteno_eval;
+            } else {
+                evaluator = function (code) {
+                    return function (callback) {
+                        let response = {};
+
+                        response.processor = 'default';
+                        response.output = code;
+
+                        callback(response);
+                    }
+                }
+            }
+
             let options = {
                 app: bodyElement.dataset.app,
-                evaluator: eel.tsteno_eval
+                evaluator
             }
 
             window.tungsteno = new Tungsteno(options);

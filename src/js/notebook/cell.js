@@ -15,6 +15,7 @@ class Cell {
         this.processors = {
             'default': new DefaultProcessor(),
             'plot': new PlotProcessor(),
+            'error': new ErrorProcessor(),
         };
     }
 
