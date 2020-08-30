@@ -7,6 +7,8 @@ let version_hash = git_info.branch + '.' + git_info.abbreviatedSha;
 let configuration = {
     'css_build_file': `styles/css/build/build.${version_hash}.css`,
     'css_min_build_file': `styles/css/build/build.${version_hash}.min.css`,
+    'js_min_build_vendor': `js/build/vendor.${version_hash}.min.js`,
+    'js_min_build_app': `js/build/app.${version_hash}.min.js`,
 };
 
 let replacement_list = [];
@@ -26,24 +28,6 @@ module.exports = function (grunt) {
             all: ['public/']
         },
 
-        // Font manager
-        googlefonts: {
-            build: {
-                options: {
-                    fontPath: 'public/styles/css/fonts/',
-                    cssFile: 'public/styles/css/fonts.css',
-                    fonts: [{
-                        family: 'Open Sans',
-                        styles: [
-                            400, 700
-                        ],
-                        subsets: [
-                            'latin',
-                        ],
-                    }]
-                }
-            }
-        },
         // For development purpouse.
         watch: {
             sass: {
@@ -58,7 +42,15 @@ module.exports = function (grunt) {
                 files: ['src/html/**/*.html'],
                 tasks: ['htmlmin', 'string-replace:html'],
                 options: {
-                    spawn: false,
+                    spawn: true,
+                    livereload: true,
+                },
+            },
+            js: {
+                files: ['src/js/**/*.js'],
+                tasks: ['uglify:app'],
+                options: {
+                    spawn: true,
                     livereload: true,
                 },
             }
@@ -84,8 +76,9 @@ module.exports = function (grunt) {
                     src: ['**/*.sass'],
                     dest: './public/styles/css',
                     ext: '.css'
-                }]
-            }
+                }],
+
+            },
         },
 
         // Minify HTML
@@ -109,6 +102,22 @@ module.exports = function (grunt) {
             css: {
                 src: ['public/styles/css/**/*.css'],
                 dest: `public/${configuration.css_build_file}`
+            }
+        },
+
+        uglify: {
+            vendor: {
+                files: {
+                    [`public/${configuration.js_min_build_vendor}`]: [
+                        'node_modules/vue/dist/vue.js', 'node_modules/vue-contenteditable/dist/contenteditable.min.js',
+                        'node_modules/@saeris/vue-spinners/lib/@saeris/vue-spinners.umd.min.js',
+                    ]
+                }
+            },
+            app: {
+                files: {
+                    [`public/${configuration.js_min_build_app}`]: ['src/js/**/*.js', '!dist/**']
+                }
             }
         },
 
@@ -160,11 +169,13 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
     grunt.loadNpmTasks('grunt-string-replace');
-    grunt.loadNpmTasks('grunt-google-fonts');
+    //grunt.loadNpmTasks('grunt-google-fonts');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-uglify-es');
 
-    let build_tasks = ['clean', 'sass', 'htmlmin', 'googlefonts', 'concat', 'cssmin', 'string-replace', 'copy'];
+
+    let build_tasks = ['clean', 'sass', 'htmlmin', 'concat', 'cssmin', 'string-replace', 'uglify'];
 
     grunt.registerTask('default', build_tasks);
 

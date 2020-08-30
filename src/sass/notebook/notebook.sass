@@ -1,18 +1,77 @@
 $cell_content_padding: 6px
+$cell_border_bg_color: #9AC9C9
+$radius_size: 3px
+$content_cell_padding: 10px
 
 .notebook
+    display: inline-block
+    width: 100%
+
     padding: 10px
+    .fade-enter-active, .fade-leave-active
+        transition: opacity .25s
+
+    .fade-enter, .fade-leave-to
+        opacity: 0
+
     .cell
+        display: inline-block
+        width: 100%
+
         [contenteditable]
             outline: 0px solid transparent
 
         .caption
-            color: #4D6464
-            padding-right: $cell_content_padding
+            display: inline-block
+            color: white
+            padding: 3px $cell_content_padding
             float: left
+            border: 2px solid $cell_border_bg_color
+            background: $cell_border_bg_color
+            border-radius: $radius_size $radius_size 0 0
+
+            ul
+                list-style: none
+                padding: 0
+                margin: 0
+                li
+                    font-size: 18px
+                    padding-right: 5px
+                    display: inline-block
+                    padding-left: 5px
+                li.title
+                    padding-left: 0
+                    font-weight: bold
+                li.run-cell
+                    cursor: pointer
+                    color: #049A70
+
+                li.run-visibility
+                    cursor: pointer
+                    color: #485865
+                li.run-settings
+                    color: #323D46
+                    cursor: pointer
+                li.stop-cell
+                    color: red
+                    cursor: pointer
 
         .input
+            padding: $content_cell_padding
             float: left
-            padding-left: $cell_content_padding
-            border-left: 2px solid #9AC9C9
+            border: 2px solid $cell_border_bg_color
             font-weight: bold
+            display: block
+            width: 100%
+            border-radius: 0 $radius_size 0 0
+            resize: none
+            height: auto
+
+        .output
+            float: left
+            padding: $content_cell_padding
+            background-color: #4D6464
+            display: block
+            width: 100%
+            color: white
+            border-radius: 0 0 $radius_size $radius_size
