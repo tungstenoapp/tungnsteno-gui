@@ -25,17 +25,24 @@ class Cell {
         }
     }
 
+    process_tsteno(result) {
+        if (this.processors.hasOwnProperty(result.processor)) {
+            this.processors[result.processor].eval(result, this);
+        }
+
+        this.loading = false;
+    }
+
     evaluate() {
         this.loading = true;
 
-        this.evaluator(this.input)(function (result) {
-            if (this.processors.hasOwnProperty(result.processor)) {
-                this.processors[result.processor].eval(result, this);
-            }
+        let eval_result = this.evaluator(this.input);
 
-            this.loading = false;
-
-        }.bind(this));
+        if (typeof (eval_result) === 'function') {
+            eval_result(this.process_tsteno.bind(this));
+        } else {
+            this.process_tsteno(eval_result);
+        }
 
         this.notebook.createCellIfNeeded(this);
     }
