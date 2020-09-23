@@ -13,21 +13,8 @@ class Notebook {
         return this.tungsteno;
     }
 
+    // https://github.com/invokemedia/vue-suggest/blob/master/index.js
     initController() {
-        Vue.component('editable', {
-            template: `<div contenteditable="true" v-once v-html="value" :value="value" @input="$emit('input', $event.target.innerHTML)"></div>`,
-            props: ['value'],
-            watch: {
-                value: function (newValue) {
-                    if (document.activeElement == this.$el) {
-                        return;
-                    }
-
-                    this.$el.innerHTML = newValue;
-                }
-            }
-        });
-
         Vue.component('plotly', {
             template: `<div></div>`,
             props: ['data', 'options'],

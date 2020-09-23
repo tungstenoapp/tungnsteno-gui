@@ -9,8 +9,10 @@ class Cell {
 
         this.hide_input = false;
         this.loading = false;
+        this.suggestions = [];
 
         this.evaluator = this.notebook.getTungsteno().getOption('evaluator');
+        this.fnsuggestions = this.notebook.getTungsteno().getOption('suggestions');
 
         this.processors = {
             'default': new DefaultProcessor(),
@@ -31,6 +33,33 @@ class Cell {
         }
 
         this.loading = false;
+    }
+
+    autocompleteIndex(index) {
+        let suggestion = this.suggestions[index];
+
+        console.log(this.suggestions)
+        if (typeof (suggestion) === 'undefined') {
+            return;
+        }
+        this.input += suggestion['append'];
+        this.suggestions.splice(0, this.suggestions.length);
+    }
+
+    autocomplete(e) {
+        this.autocompleteIndex(0);
+
+        document.execCommand('selectAll', false, null);
+        document.getSelection().collapseToEnd();
+
+        return e.preventDefault();
+    }
+
+    refreshSuggestions() {
+        this.fnsuggestions(this.input)()
+            .then(suggestions => {
+                this.suggestions = suggestions;
+            });
     }
 
     evaluate() {

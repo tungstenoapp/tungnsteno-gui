@@ -59,13 +59,23 @@
                         <!--
                         <li class="run-settings"><i class="fas fa-cog"></i></li>
                         -->
+                        <li>
+                            <ul class="smart-ac">
+                                <li v-for="(suggestion, index) in cell.suggestions"
+                                    v-on:click="cell.autocompleteIndex(index)">
+                                    {{ suggestion.caption }}
+                                </li>
+                                <li>?</li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
 
 
-                <contenteditable spellcheck="false" v-if="!cell.hide_input" class="input" tag="div"
+                <contenteditable spellcheck=" false" v-if="!cell.hide_input" class="input" tag="div"
                     :contenteditable="true" v-model="cell.input" @keyup.shift.13="cell.evaluate"
-                    @keypress="disableShiftEnter">
+                    v-on:keydown.tab="cell.autocomplete" @keypress="disableShiftEnter"
+                    v-on:keypress="cell.refreshSuggestions()">
                 </contenteditable>
 
                 <transition name="fade">
@@ -97,10 +107,11 @@
     <script type="text/javascript">
         window.onload = (function () {
             let bodyElement = document.getElementsByTagName('body')[0];
-            let evaluator;
+            let evaluator, suggestions;
 
             if (typeof eel !== 'undefined') {
                 evaluator = eel.tsteno_eval;
+                suggestions = eel.suggestions;
             } else {
                 evaluator = function (code) {
                     return function (callback) {
@@ -112,11 +123,22 @@
                         callback(response);
                     }
                 }
+
+                suggestions = function (input) {
+                    return function () {
+                        return Promise.resolve([{
+                            caption: "Integrate",
+                            append: "egrate"
+                        }])
+                    }
+
+                }
             }
 
             let options = {
                 app: bodyElement.dataset.app,
-                evaluator
+                evaluator,
+                suggestions
             }
 
             window.tungsteno = new Tungsteno(options);
