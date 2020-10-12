@@ -10,7 +10,11 @@ class Tungsteno {
 
         this.controller.initController();
 
-        document.title = "Tungsteno - Untitled.nb"
+        if (options.eel_configuration.hasOwnProperty('input_file')) {
+            document.title = "Tungsteno - " + options.eel_configuration.input_file.split('\\').pop().split('/').pop();
+        } else {
+            document.title = "Tungsteno - Untitled.nb"
+        }
     }
 
     getOption(key) {

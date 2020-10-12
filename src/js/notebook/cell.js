@@ -1,10 +1,10 @@
 class Cell {
 
-    constructor(notebook, cell_id) {
+    constructor(notebook, cell_id, input = '') {
         this.notebook = notebook;
         this.cell_id = cell_id;
 
-        this.input = '';
+        this.input = input;
         this.output_type = null;
 
         this.hide_input = false;
@@ -12,8 +12,15 @@ class Cell {
         this.suggestions = [];
 
         this.evaluator = this.notebook.getTungsteno().getOption('evaluator');
+
+        if (!this.evaluator) {
+            this.evaluator = eel.tsteno_eval;
+        }
         this.fnsuggestions = this.notebook.getTungsteno().getOption('suggestions');
 
+        if (!this.fnsuggestions) {
+            this.fnsuggestions = eel.suggestions;
+        }
         this.processors = {
             'default': new DefaultProcessor(),
             'plot': new PlotProcessor(),

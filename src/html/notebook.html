@@ -105,13 +105,14 @@
     <script type="text/javascript" src="/eel.js"></script>
 
     <script type="text/javascript">
-        window.onload = (function () {
+        window.onload = (async function () {
             let bodyElement = document.getElementsByTagName('body')[0];
-            let evaluator, suggestions;
+            let evaluator, suggestions, eel_configuration = {};
 
             if (typeof eel !== 'undefined') {
-                evaluator = eel.tsteno_eval;
-                suggestions = eel.suggestions;
+                evaluator = null;
+                suggestions = null;
+                eel_configuration = await eel.get_eel_configuration()();
             } else {
                 evaluator = function (code) {
                     return function (callback) {
@@ -138,7 +139,8 @@
             let options = {
                 app: bodyElement.dataset.app,
                 evaluator,
-                suggestions
+                suggestions,
+                eel_configuration
             }
 
             window.tungsteno = new Tungsteno(options);
