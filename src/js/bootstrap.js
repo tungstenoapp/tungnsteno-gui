@@ -9,6 +9,8 @@ class Tungsteno {
         this.controller = new Controllers[this.options.app](this);
 
         this.controller.initController();
+
+        document.title = "Tungsteno - Untitled.nb"
     }
 
     getOption(key) {
