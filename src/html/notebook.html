@@ -80,7 +80,7 @@
 
                 <transition name="fade">
                     <div v-bind:class="'cell_container_' + cell.output_type" class="output"
-                        v-if="cell.output_type != null || cell.loading">
+                        v-if="(cell.output_type != null && cell.output.length > 0) || cell.loading">
                         <sync-loader style="text-align: center; padding: 10px" :loading="cell.loading" :size="5"
                             :sizeUnit="px" :color="loading_color"></sync-loader>
                         <template v-if="!cell.loading">
