@@ -8,6 +8,8 @@ import 'ace-builds/src-noconflict/mode-javascript'
 import 'ace-builds/src-noconflict/theme-github'
 import { addCompleter } from 'ace-builds/src-noconflict/ext-language_tools'
 
+import Plot from 'react-plotly.js'
+
 import TungstenoMode from './AceMode/Tungsteno'
 
 import { eel } from '../../Python/eel'
@@ -19,7 +21,7 @@ class CellComponent extends React.Component {
     super(props)
 
     this.state = {
-      output: ''
+      output: {}
     }
 
     this.handleEvaluateCell = this.evaluateCell.bind(this)
@@ -46,14 +48,37 @@ class CellComponent extends React.Component {
 
     eel
       .evaluate(this.refs.codeEditor.editor.getValue())()
-      .then(evaluation => {
+      .then(output => {
         this.setState({
-          output: evaluation.output
+          output
         })
       })
   }
 
   render () {
+    let output
+
+    if (this.state.output) {
+      switch (this.state.output.processor) {
+        case 'default':
+          output = this.state.output.result
+          break
+        case 'plot':
+          console.log(this.state.output)
+          output = (
+            <center>
+              <Plot
+                data={this.state.output.plot_data}
+                layout={{
+                  autosize: true
+                }}
+              />
+            </center>
+          )
+          break
+      }
+    }
+
     return (
       <div className='uk-card uk-card-default uk-width-1-1 uk-margin uk-box-shadow-hover-medium uk-box-shadow-small'>
         <div className='uk-card-header'>
@@ -95,9 +120,7 @@ class CellComponent extends React.Component {
             />
           </div>
         </div>
-        <div className='uk-card-footer uk-card-secondary uk-card-tungsteno-light'>
-          {this.state.output}
-        </div>
+        <div className='uk-card-footer'>{output}</div>
       </div>
     )
   }
