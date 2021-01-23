@@ -40,7 +40,9 @@ class CellComponent extends React.Component {
   }
 
   evaluateCell () {
-    this.props.Notebook.createNewCell()
+    if (this.props.Cell.Id === this.props.Notebook.cells.length) {
+      this.props.Notebook.createNewCell()
+    }
 
     eel
       .evaluate(this.refs.codeEditor.editor.getValue())()
