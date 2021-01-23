@@ -1,0 +1,26 @@
+.uk-button-success {
+    background-color: #5cb85c;
+    color: white;
+    border: 1px solid #13bd13;
+}
+
+.uk-button-success:hover {
+    color: white;
+    background-color: #13bd13;
+}
+
+.uk-card-tungsteno-light {
+    background: #9ac9c9;
+}
+
+.uk-logo {
+    font-weight: bold;
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+/Edge */
+    user-select: none;
+    /* Standard */
+}
