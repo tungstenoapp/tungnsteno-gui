@@ -10,6 +10,15 @@ if (!window['eel']) {
                 }])
             }
         },
+        searchFunction: function (search) {
+            return function () {
+                return Promise.resolve([{
+                    'functionName': 'Integrate',
+                    'description': "*world*!",
+                }]);
+            }
+
+        },
         evaluate: function (code) {
             return function () {
                 if (code == 'plot') {
