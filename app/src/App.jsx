@@ -8,6 +8,7 @@ function App () {
   return (
     <>
       <Header></Header>
+
       <Notebook Cells={Cells} Properties={NotebookProperties}></Notebook>
     </>
   )

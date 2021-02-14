@@ -24,20 +24,6 @@ class Topbar extends React.Component {
       .then(searchResults => this.setState({ searchResults }))
   }
   render () {
-    let searchResults = 'No results'
-
-    if (this.state.searchResults.length > 0) {
-      searchResults = ''
-
-      for (let i = 0; i < this.state.searchResults.length; i++) {
-        let searchResult = this.state.searchResults[i]
-
-        searchResults += <strong>{searchResult.functionName}</strong>
-      }
-    }
-
-    console.log(this.state.searchResults.length)
-
     return (
       <div uk-sticky='sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky'>
         <nav className='uk-navbar uk-navbar-container uk-margin'>
@@ -57,7 +43,7 @@ class Topbar extends React.Component {
                 className='uk-margin-small-right'
                 icon={faAtom}
               />{' '}
-              Tungsteno v1.1
+              Tungsteno v1.2 (Alpha)
             </a>
           </div>
 
@@ -88,27 +74,52 @@ class Topbar extends React.Component {
                     }}
                   >
                     {this.state.searchResults.map((searchResult, i) => {
-                      return (
-                        <div class='uk-card uk-card-default'>
-                          <div class='uk-card-body'>
-                            <div class='uk-card-badge uk-label'>Builtin</div>
+                      let abstract = ''
+                      if (searchResult.description.split('\n').length > 0) {
+                        abstract = searchResult.description.split('\n')[1]
+                      }
 
-                            <h3 class='uk-card-title uk-margin-remove-bottom'>
+                      return (
+                        <div className='uk-card uk-card-default'>
+                          <div className='uk-card-body'>
+                            <div className='uk-card-badge uk-label'>
+                              Builtin
+                            </div>
+
+                            <h3 className='uk-card-title uk-margin-remove-bottom'>
                               {searchResult.functionName}
                             </h3>
                             <p>
                               <ReactMarkdown
-                                children={searchResult.description.substring(
-                                  0,
-                                  30
-                                )}
+                                children={abstract}
                               ></ReactMarkdown>
                             </p>
                           </div>
-                          <div class='uk-card-footer'>
-                            <a href='#' class='uk-button uk-button-text'>
+                          <div className='uk-card-footer'>
+                            <a
+                              href='#'
+                              data-uk-toggle={
+                                'target: #' + searchResult.functionName
+                              }
+                              className='uk-button uk-button-text'
+                            >
                               Read more
                             </a>
+                          </div>
+                          <div id={searchResult.functionName} data-uk-modal>
+                            <div className='uk-modal-dialog uk-modal-body'>
+                              <button
+                                className='uk-modal-close-default'
+                                type='button'
+                                data-uk-close
+                              ></button>
+                              <h2 className='uk-modal-title'>
+                                {searchResult.functionName}
+                              </h2>
+                              <ReactMarkdown>
+                                {searchResult.description}
+                              </ReactMarkdown>
+                            </div>
                           </div>
                         </div>
                       )
@@ -119,6 +130,9 @@ class Topbar extends React.Component {
             </div>
           </div>
         </nav>
+        {this.state.searchResults.map((searchResult, i) => {
+          return ''
+        })}
       </div>
     )
   }
