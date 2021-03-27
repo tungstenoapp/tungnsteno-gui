@@ -64,7 +64,6 @@ class CellComponent extends React.Component {
           output = this.state.output.result
           break
         case 'plot':
-          console.log(this.state.output)
           output = (
             <center>
               <Plot
@@ -75,6 +74,9 @@ class CellComponent extends React.Component {
               />
             </center>
           )
+          break
+        case 'error':
+          output = <pre class='uk-text-danger'>{this.state.output.error}</pre>
           break
       }
     }
