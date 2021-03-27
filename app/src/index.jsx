@@ -8,18 +8,23 @@ import '../node_modules/uikit/dist/js/uikit.min.js'
 import './Styles/common.css'
 
 import common_en from './Locale/Translations/en/common.json'
+import common_es from './Locale/Translations/es/common.json'
 
 import { initReactI18next } from 'react-i18next'
+import LanguageDetector from 'i18next-browser-languagedetector'
 
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
+  .use(LanguageDetector)
   .init({
     resources: {
       en: {
-        common: common_en // 'common' is our custom namespace
+        common: common_en
+      },
+      es: {
+        common: common_es
       }
     },
-    lng: 'en',
     fallbackLng: 'en',
 
     interpolation: {

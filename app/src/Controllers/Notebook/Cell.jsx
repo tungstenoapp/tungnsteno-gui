@@ -1,6 +1,7 @@
 class Cell {
-  constructor (id) {
+  constructor (id, value = '') {
     this.Id = id
+    this.value = value
   }
 }
 

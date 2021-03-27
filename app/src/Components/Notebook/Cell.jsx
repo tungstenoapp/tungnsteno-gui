@@ -25,6 +25,7 @@ class CellComponent extends React.Component {
     }
 
     this.handleEvaluateCell = this.evaluateCell.bind(this)
+    this.handleUpdateInputValue = this.updateInputValue.bind(this)
   }
 
   componentDidMount () {
@@ -42,17 +43,21 @@ class CellComponent extends React.Component {
   }
 
   evaluateCell () {
-    if (this.props.Cell.Id === this.props.Notebook.cells.length) {
+    if (this.props.Cell.Id === this.props.Notebook.state.cells.length) {
       this.props.Notebook.createNewCell()
     }
 
     eel
-      .evaluate(this.refs.codeEditor.editor.getValue())()
+      .evaluate(this.props.Cell.value)()
       .then(output => {
         this.setState({
           output
         })
       })
+  }
+
+  updateInputValue (value) {
+    this.props.Cell.value = value
   }
 
   render () {
@@ -61,7 +66,7 @@ class CellComponent extends React.Component {
     if (this.state.output) {
       switch (this.state.output.processor) {
         case 'default':
-          output = this.state.output.result
+          output = <pre>{this.state.output.result}</pre>
           break
         case 'plot':
           output = (
@@ -100,7 +105,9 @@ class CellComponent extends React.Component {
               ref='codeEditor'
               mode='javascript'
               theme='github'
-              name='{this.props.Cell.Id}'
+              name={this.props.Cell.Id}
+              value={this.props.Cell.value}
+              onChange={this.handleUpdateInputValue}
               width='100%'
               height='auto'
               setOptions={{

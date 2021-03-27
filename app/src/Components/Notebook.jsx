@@ -1,20 +1,22 @@
 import React from 'react'
 
-import Notebook from '../Controllers/Notebook'
+import Cell from '../Controllers/Notebook/Cell'
 import CellComponent from './Notebook/Cell'
 
 class NotebookComponent extends React.Component {
   constructor (props) {
     super(props)
 
-    this.state = {}
-    this.Notebook = new Notebook(this)
-
-    this.state.cells = this.Notebook.cells
+    this.state = { cells: [] }
   }
 
   componentDidMount () {
-    this.Notebook.createNewCell()
+    this.createNewCell()
+  }
+
+  createNewCell () {
+    this.state.cells.push(new Cell(this.state.cells.length + 1))
+    this.setState({ cells: this.state.cells })
   }
 
   render () {
@@ -23,7 +25,7 @@ class NotebookComponent extends React.Component {
         {this.state.cells.map((cell, index) => (
           <CellComponent
             key={cell.Id}
-            Notebook={this.Notebook}
+            Notebook={this}
             Cell={cell}
           ></CellComponent>
         ))}

@@ -1,11 +1,11 @@
 import Topbar from './Header/Topbar'
 import Navbar from './Header/Navbar'
 
-function Header () {
+function Header (props) {
   return (
     <header>
       <Topbar></Topbar>
-      <Navbar></Navbar>
+      <Navbar updateNotebook={props.updateNotebook}></Navbar>
     </header>
   )
 }

@@ -13,6 +13,8 @@
     "@testing-library/user-event": "^12.6.0",
     "ace-builds": "^1.4.12",
     "i18next": "^19.8.4",
+    "i18next-browser-languagedetector": "^6.1.0",
+    "i18next-http-backend": "^1.2.1",
     "plotly.js": "^1.58.4",
     "react": "^17.0.1",
     "react-ace": "^9.2.1",

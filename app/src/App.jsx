@@ -1,17 +1,32 @@
+import React from 'react'
+
 import Header from './Components/Header'
 import Notebook from './Components/Notebook'
+import Cell from './Controllers/Notebook/Cell'
 
-let Cells = []
-let NotebookProperties = {}
+class App extends React.Component {
+  constructor (props) {
+    super(props)
+    this.handleUpdateNotebook = this.updateNotebook.bind(this)
+  }
 
-function App () {
-  return (
-    <>
-      <Header></Header>
+  updateNotebook (cells, notebookProperties) {
+    cells.push(new Cell(cells.length + 1, ''))
 
-      <Notebook Cells={Cells} Properties={NotebookProperties}></Notebook>
-    </>
-  )
+    this.refs.notebook.setState({
+      cells: cells,
+      notebookProperties: notebookProperties
+    })
+  }
+
+  render () {
+    return (
+      <>
+        <Header updateNotebook={this.handleUpdateNotebook}></Header>
+        <Notebook ref='notebook'></Notebook>
+      </>
+    )
+  }
 }
 
 export default App

@@ -27,23 +27,21 @@ class Topbar extends React.Component {
     return (
       <div uk-sticky='sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky'>
         <nav className='uk-navbar uk-navbar-container uk-margin'>
-          {/*
-                    <div className='uk-navbar-left'>
+          <div className='uk-navbar-left'>
             <a
               className='uk-navbar-toggle'
               uk-toggle='target: #nav-primary'
               uk-navbar-toggle-icon=''
             ></a>
           </div>
-            */}
 
           <div className='uk-navbar-center'>
             <a className='uk-navbar-item uk-logo'>
               <FontAwesomeIcon
                 className='uk-margin-small-right'
                 icon={faAtom}
-              />{' '}
-              Tungsteno v1.2 (Alpha)
+              />
+              Tungsteno v1.3 (Alpha)
             </a>
           </div>
 
