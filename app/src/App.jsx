@@ -8,6 +8,11 @@ class App extends React.Component {
   constructor (props) {
     super(props)
     this.handleUpdateNotebook = this.updateNotebook.bind(this)
+    this.handleDumpCells = this.dumpCells.bind(this)
+  }
+
+  dumpCells () {
+    return this.refs.notebook.state.cells
   }
 
   updateNotebook (cells, notebookProperties) {
@@ -22,7 +27,10 @@ class App extends React.Component {
   render () {
     return (
       <>
-        <Header updateNotebook={this.handleUpdateNotebook}></Header>
+        <Header
+          dumpCells={this.handleDumpCells}
+          updateNotebook={this.handleUpdateNotebook}
+        ></Header>
         <Notebook ref='notebook'></Notebook>
       </>
     )

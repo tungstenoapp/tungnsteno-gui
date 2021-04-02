@@ -7,11 +7,28 @@ class NotebookComponent extends React.Component {
   constructor (props) {
     super(props)
 
-    this.state = { cells: [] }
+    if (window.localStorage.getItem('auto_save_nb')) {
+      this.state = {
+        cells: JSON.parse(window.localStorage.getItem('auto_save_nb'))
+      }
+    } else {
+      this.state = { cells: [] }
+    }
+
+    setInterval(this.saveOnLocalStorage.bind(this), 10000)
+  }
+
+  saveOnLocalStorage () {
+    window.localStorage.setItem(
+      'auto_save_nb',
+      JSON.stringify(this.state.cells)
+    )
   }
 
   componentDidMount () {
-    this.createNewCell()
+    if (this.state.cells.length == 0) {
+      this.createNewCell()
+    }
   }
 
   createNewCell () {

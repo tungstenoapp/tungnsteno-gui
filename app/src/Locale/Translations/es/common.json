@@ -1,5 +1,5 @@
 {
     "FILE_HEADER_MENU": "Archivos",
-    "FILE_HEADER_MENU_OPEN": "Abrir archivo..."
-
+    "FILE_HEADER_MENU_OPEN": "Abrir archivo...",
+    "FILE_HEADER_MENU_SAVE": "Guardar archivo..."
 }

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFile, faFileUpload } from '@fortawesome/free-solid-svg-icons'
+import { faFile, faFileUpload, faSave } from '@fortawesome/free-solid-svg-icons'
 import { eel } from '../../Python/eel'
 
 import Cell from '../../Controllers/Notebook/Cell'
@@ -73,6 +73,37 @@ function Navbar (props) {
     reader.readAsText(uploadFile.current.files[0])
   }
 
+  async function saveNotebook () {
+    function downloadString (text, fileType, fileName) {
+      var blob = new Blob([text], { type: fileType })
+
+      var a = document.createElement('a')
+      a.download = fileName
+      a.href = URL.createObjectURL(blob)
+      a.dataset.downloadurl = [fileType, a.download, a.href].join(':')
+      a.style.display = 'none'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      setTimeout(function () {
+        URL.revokeObjectURL(a.href)
+      }, 1500)
+    }
+
+    let cells = props.dumpCells()
+    let cellsInput = []
+
+    for (var i = 0; i < cells.length; i++) {
+      cellsInput.push(cells[i].value)
+    }
+
+    downloadString(
+      await eel.export_nb(cellsInput)(),
+      'application/vnd.wolfram.mathematica',
+      'Untitled.nb'
+    )
+  }
+
   return (
     <div id='nav-primary' uk-offcanvas='overlay: true'>
       <div className='uk-offcanvas-bar uk-flex uk-flex-column'>
@@ -100,6 +131,16 @@ function Navbar (props) {
                     icon={faFileUpload}
                   />{' '}
                   {t('FILE_HEADER_MENU_OPEN')}{' '}
+                </a>
+              </li>
+
+              <li>
+                <a href='#' onClick={saveNotebook}>
+                  <FontAwesomeIcon
+                    className='uk-margin-small-right'
+                    icon={faSave}
+                  />{' '}
+                  {t('FILE_HEADER_MENU_SAVE')}{' '}
                 </a>
               </li>
             </ul>

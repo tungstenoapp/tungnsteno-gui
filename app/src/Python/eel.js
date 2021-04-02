@@ -19,6 +19,11 @@ if (!window['eel']) {
             }
 
         },
+        export_nb: function () {
+            return function () {
+                return Promise.resolve("Hola mundo!")
+            }
+        },
         evaluate: function (code) {
             return function () {
                 if (code == 'plot') {

@@ -41,7 +41,7 @@ class Topbar extends React.Component {
                 className='uk-margin-small-right'
                 icon={faAtom}
               />
-              Tungsteno v1.3 (Alpha)
+              Tungsteno v1.4 (Beta)
             </a>
           </div>
 

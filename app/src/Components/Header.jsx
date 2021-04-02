@@ -5,7 +5,10 @@ function Header (props) {
   return (
     <header>
       <Topbar></Topbar>
-      <Navbar updateNotebook={props.updateNotebook}></Navbar>
+      <Navbar
+        dumpCells={props.dumpCells}
+        updateNotebook={props.updateNotebook}
+      ></Navbar>
     </header>
   )
 }
