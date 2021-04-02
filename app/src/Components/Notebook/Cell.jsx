@@ -20,8 +20,13 @@ class CellComponent extends React.Component {
   constructor (props) {
     super(props)
 
+    let output = {}
+
+    if (props.Cell.output) {
+      output = props.Cell.output
+    }
     this.state = {
-      output: {}
+      output: output
     }
 
     this.handleEvaluateCell = this.evaluateCell.bind(this)
@@ -50,6 +55,7 @@ class CellComponent extends React.Component {
     eel
       .evaluate(this.props.Cell.value)()
       .then(output => {
+        this.props.Cell.output = output
         this.setState({
           output
         })
