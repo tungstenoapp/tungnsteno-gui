@@ -24,6 +24,11 @@ if (!window['eel']) {
                 return Promise.resolve("Hola mundo!")
             }
         },
+        ping: function () {
+            return function () {
+                return Promise.resolve("pong")
+            }
+        },
         evaluate: function (code) {
             return function () {
                 if (code == 'plot') {
