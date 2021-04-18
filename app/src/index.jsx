@@ -26,7 +26,7 @@ i18n
         common: common_es
       },
       andaluh: {
-        common: andaluh
+        common: common_andaluh
       }
     },
     fallbackLng: 'en',
