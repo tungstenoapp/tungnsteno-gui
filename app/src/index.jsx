@@ -9,6 +9,7 @@ import './Styles/common.css'
 
 import common_en from './Locale/Translations/en/common.json'
 import common_es from './Locale/Translations/es/common.json'
+import common_andaluh from './Locale/Translations/andaluh/common.json'
 
 import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
@@ -23,6 +24,9 @@ i18n
       },
       es: {
         common: common_es
+      },
+      andaluh: {
+        common: andaluh
       }
     },
     fallbackLng: 'en',
