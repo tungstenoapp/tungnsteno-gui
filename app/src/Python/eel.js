@@ -29,6 +29,11 @@ if (!window['eel']) {
                 return Promise.resolve("pong")
             }
         },
+        getVersion: function () {
+            return function () {
+                return Promise.resolve('prebuild');
+            }
+        },
         evaluate: function (code) {
             return function () {
                 if (code == 'plot') {

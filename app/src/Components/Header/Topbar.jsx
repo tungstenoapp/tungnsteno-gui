@@ -11,7 +11,8 @@ class Topbar extends React.Component {
 
     this.state = {
       searchValue: '',
-      searchResults: []
+      searchResults: [],
+      version: 'no-version'
     }
 
     this.bindSearchFunctions = this.searchFunctions.bind(this)
@@ -23,6 +24,11 @@ class Topbar extends React.Component {
       .searchFunction(ev.target.value)()
       .then(searchResults => this.setState({ searchResults }))
   }
+
+  async componentDidMount () {
+    this.setState({ version: await eel.getVersion()() })
+  }
+
   render () {
     return (
       <div uk-sticky='sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky'>
@@ -41,7 +47,7 @@ class Topbar extends React.Component {
                 className='uk-margin-small-right'
                 icon={faAtom}
               />
-              Tungsteno v1.4 (Beta)
+              Tungsteno {this.state.version}
             </a>
           </div>
 
