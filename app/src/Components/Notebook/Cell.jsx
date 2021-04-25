@@ -76,11 +76,21 @@ class CellComponent extends React.Component {
           break
         case 'plot':
           output = (
-            <center>
+            <center
+              style={{
+                width: '100%',
+                height: '100%'
+              }}
+            >
               <Plot
                 data={this.state.output.plot_data}
                 layout={{
                   autosize: true
+                }}
+                useResizeHandler='true'
+                style={{
+                  width: '100%',
+                  height: '100%'
                 }}
               />
             </center>
