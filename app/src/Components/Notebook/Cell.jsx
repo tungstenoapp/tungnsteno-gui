@@ -106,7 +106,6 @@ class CellComponent extends React.Component {
       <div className='uk-card uk-card-default uk-width-1-1 uk-margin uk-box-shadow-hover-medium uk-box-shadow-small'>
         <div className='uk-card-header'>
           <a
-            href='#'
             onClick={this.handleEvaluateCell}
             className='uk-icon-button uk-button-success uk-margin-small-right'
           >
