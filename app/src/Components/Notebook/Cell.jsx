@@ -25,12 +25,17 @@ class CellComponent extends React.Component {
     if (props.Cell.output) {
       output = props.Cell.output
     }
+
+    if (output.manipulate_result) {
+      delete output.manipulate_result;
+    }
     this.state = {
       output: output
     }
 
     this.handleEvaluateCell = this.evaluateCell.bind(this)
     this.handleUpdateInputValue = this.updateInputValue.bind(this)
+    this.handleUpdateManipulate = this.updateManipulate.bind(this)
   }
 
   componentDidMount () {
@@ -66,40 +71,97 @@ class CellComponent extends React.Component {
     this.props.Cell.value = value
   }
 
-  render () {
-    let output
+  updateManipulate(event) {
+    let allVariablesNodes = event.currentTarget.parentNode.parentNode.childNodes
+    let variablesReferences = {}
 
-    if (this.state.output) {
-      switch (this.state.output.processor) {
-        case 'default':
-          output = <pre>{this.state.output.result}</pre>
-          break
-        case 'plot':
-          output = (
-            <center
+    for (let i = 0; i < allVariablesNodes.length; i++) {
+      let variableNode = allVariablesNodes[i].childNodes[1];
+      variablesReferences[variableNode.getAttribute('variablename')] = parseFloat(variableNode.value)
+    }
+
+    let outputField = event.currentTarget.parentNode.parentNode.parentNode.parentNode.parentNode.childNodes[1];
+
+    eel
+    .evaluate_manipulate(outputField.getAttribute('expr'), variablesReferences)()
+    .then(output => {
+      let currentOutput = this.state.output;
+      currentOutput.manipulate_result = this.output2html(output)
+      this.setState({
+        output: currentOutput
+      })
+    })
+  }
+
+  output2html(inputOutput) {
+    let output = "";
+    switch (inputOutput.processor) {
+      case 'default':
+        output = <pre>{inputOutput.result}</pre>
+        break
+      case 'manipulate':
+        let ranges = inputOutput.ranges.map((range) => (
+          <div className='uk-margin'>
+            {range[0]}
+            <input variablename={range[0]} onChange={this.handleUpdateManipulate} min={range[1]} max={range[2]} step={range[3]} className='uk-range' type='range'></input>
+          </div>
+        ) );
+
+        if (!inputOutput.manipulate_result) {
+          inputOutput.manipulate_result = ""
+        }
+
+        output = (      
+          <div className="uk-card ">
+            <div className="uk-card-header">
+              <span class="uk-label uk-label-warning">interactive</span>
+              <form>
+                <fieldset className="uk-fieldset">
+                    {ranges}
+                </fieldset>
+              </form>
+            </div>
+            <div expr={inputOutput.expr} className="uk-card-body">
+              {inputOutput.manipulate_result}
+            </div>
+            <div className="uk-card-footer"></div>
+          </div>
+        )
+        break
+      case 'plot':
+        output = (
+          <center
+            style={{
+              width: '100%',
+              height: '100%'
+            }}
+          >
+            <Plot
+              data={inputOutput.plot_data}
+              layout={{
+                autosize: true
+              }}
+              useResizeHandler='true'
               style={{
                 width: '100%',
                 height: '100%'
               }}
-            >
-              <Plot
-                data={this.state.output.plot_data}
-                layout={{
-                  autosize: true
-                }}
-                useResizeHandler='true'
-                style={{
-                  width: '100%',
-                  height: '100%'
-                }}
-              />
-            </center>
-          )
-          break
-        case 'error':
-          output = <pre class='uk-text-danger'>{this.state.output.error}</pre>
-          break
-      }
+            />
+          </center>
+        )
+        break
+      case 'error':
+        output = <pre class='uk-text-danger'>{inputOutput.error}</pre>
+        break
+    }
+    return output
+  }
+
+  render () {
+    let output
+
+    if (this.state.output) {
+        output = this.output2html(this.state.output)
     }
 
     return (

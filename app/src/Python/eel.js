@@ -34,6 +34,9 @@ if (!window['eel']) {
                 return Promise.resolve('prebuild');
             }
         },
+        evaluate_manipulate: function(pointer, variables_references) {
+            return  window['eel'].evaluate(pointer)
+        },
         evaluate: function (code) {
             return function () {
                 if (code == 'plot') {
@@ -77,6 +80,15 @@ if (!window['eel']) {
                         }]
                     })
                 }
+
+                if (code == 'manipulate') {
+                    return Promise.resolve({
+                        'processor': 'manipulate',
+                        'ranges': [['x', 0, 6, 0.1], ['y', 10, 20, 0.1]],
+                        'expr': 'plot'
+                    })
+                }
+
                 return Promise.resolve({
                     processor: 'default',
                     result: 'Hello world!'
