@@ -1,7 +1,7 @@
 if (!window['eel']) {
     window['eel'] = {
-        suggestions: function (prefix) {
-            return function () {
+        suggestions: function(prefix) {
+            return function() {
                 return Promise.resolve([{
                     name: "autocomplete_1",
                     value: "autocomplete_2",
@@ -10,8 +10,8 @@ if (!window['eel']) {
                 }])
             }
         },
-        searchFunction: function (search) {
-            return function () {
+        searchFunction: function(search) {
+            return function() {
                 return Promise.resolve([{
                     'functionName': 'Integrate',
                     'description': "*world*!",
@@ -19,26 +19,26 @@ if (!window['eel']) {
             }
 
         },
-        export_nb: function () {
-            return function () {
+        export_nb: function() {
+            return function() {
                 return Promise.resolve("Hola mundo!")
             }
         },
-        ping: function () {
-            return function () {
+        ping: function() {
+            return function() {
                 return Promise.resolve("pong")
             }
         },
-        getVersion: function () {
-            return function () {
+        getVersion: function() {
+            return function() {
                 return Promise.resolve('prebuild');
             }
         },
         evaluate_manipulate: function(pointer, variables_references) {
-            return  window['eel'].evaluate(pointer)
+            return window['eel'].evaluate(pointer)
         },
-        evaluate: function (code) {
-            return function () {
+        evaluate: function(code) {
+            return function() {
                 if (code == 'plot') {
                     return Promise.resolve({
                         processor: 'plot',
@@ -84,14 +84,18 @@ if (!window['eel']) {
                 if (code == 'manipulate') {
                     return Promise.resolve({
                         'processor': 'manipulate',
-                        'ranges': [['x', 0, 6, 0.1], ['y', 10, 20, 0.1]],
+                        'ranges': [
+                            ['x', 0, 6, 0.1],
+                            ['y', 10, 20, 0.1]
+                        ],
                         'expr': 'plot'
                     })
                 }
 
                 return Promise.resolve({
                     processor: 'default',
-                    result: 'Hello world!'
+                    result: 'x^+1',
+                    latex: String.raw `\int_0^\infty \frac{x^3}{e^x-1}\,dx = \frac{\pi^4}{15}`
                 })
             }
         }

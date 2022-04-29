@@ -1,3 +1,8 @@
 .uk-editor {
     width: 100%;
 }
+
+.copyable-pre:hover {
+    cursor: pointer;
+    background-color: #CDCDCD;
+}

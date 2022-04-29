@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlay } from '@fortawesome/free-solid-svg-icons'
+import { faPlay, faClipboard } from '@fortawesome/free-solid-svg-icons'
 
 import AceEditor from 'react-ace'
 
@@ -16,8 +16,12 @@ import { eel } from '../../Python/eel'
 
 import '../../Styles/cell.css'
 
+import { MathComponent } from 'mathjax-react'
+
+import UIkit from 'uikit'
+
 class CellComponent extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     let output = {}
@@ -38,7 +42,7 @@ class CellComponent extends React.Component {
     this.handleUpdateManipulate = this.updateManipulate.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.refs.codeEditor.editor.getSession().setMode(new TungstenoMode())
 
     addCompleter({
@@ -52,7 +56,7 @@ class CellComponent extends React.Component {
     })
   }
 
-  evaluateCell () {
+  evaluateCell() {
     if (this.props.Cell.Id === this.props.Notebook.state.cells.length) {
       this.props.Notebook.createNewCell()
     }
@@ -67,7 +71,7 @@ class CellComponent extends React.Component {
       })
   }
 
-  updateInputValue (value) {
+  updateInputValue(value) {
     this.props.Cell.value = value
   }
 
@@ -83,21 +87,38 @@ class CellComponent extends React.Component {
     let outputField = event.currentTarget.parentNode.parentNode.parentNode.parentNode.parentNode.childNodes[1];
 
     eel
-    .evaluate_manipulate(outputField.getAttribute('expr'), variablesReferences)()
-    .then(output => {
-      let currentOutput = this.state.output;
-      currentOutput.manipulate_result = this.output2html(output)
-      this.setState({
-        output: currentOutput
+      .evaluate_manipulate(outputField.getAttribute('expr'), variablesReferences)()
+      .then(output => {
+        let currentOutput = this.state.output;
+        currentOutput.manipulate_result = this.output2html(output)
+        this.setState({
+          output: currentOutput
+        })
       })
-    })
+  }
+
+  copyToClipboard(text) {
+    let textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand("copy");
+    textArea.remove();
+
+    UIkit.notification("✅ Result copied to clipboard", { "pos": "bottom-right", timeout: 1000 });
   }
 
   output2html(inputOutput) {
     let output = "";
     switch (inputOutput.processor) {
       case 'default':
-        output = <pre>{inputOutput.result}</pre>
+        output = (
+          <pre className="copyable-pre" onClick={() => { this.copyToClipboard(inputOutput.result) }}>
+            <MathComponent tex={inputOutput.latex} display={false}>
+            </MathComponent>
+          </pre>
+
+        )
         break
       case 'manipulate':
         let ranges = inputOutput.ranges.map((range) => (
@@ -105,19 +126,19 @@ class CellComponent extends React.Component {
             {range[0]}
             <input variablename={range[0]} onChange={this.handleUpdateManipulate} min={range[1]} max={range[2]} step={range[3]} className='uk-range' type='range'></input>
           </div>
-        ) );
+        ));
 
         if (!inputOutput.manipulate_result) {
           inputOutput.manipulate_result = ""
         }
 
-        output = (      
+        output = (
           <div className="uk-card ">
             <div className="uk-card-header">
               <span class="uk-label uk-label-warning">interactive</span>
               <form>
                 <fieldset className="uk-fieldset">
-                    {ranges}
+                  {ranges}
                 </fieldset>
               </form>
             </div>
@@ -157,11 +178,11 @@ class CellComponent extends React.Component {
     return output
   }
 
-  render () {
+  render() {
     let output
 
     if (this.state.output) {
-        output = this.output2html(this.state.output)
+      output = this.output2html(this.state.output)
     }
 
     return (
@@ -172,6 +193,18 @@ class CellComponent extends React.Component {
             className='uk-icon-button uk-button-success uk-margin-small-right'
           >
             <FontAwesomeIcon icon={faPlay} />
+          </a>
+
+          <a
+            onClick={() => {
+              if (!this.state.output) {
+                return;
+              }
+              this.copyToClipboard(this.state.output.result)
+            }}
+            className='uk-icon-button uk-button-secondary uk-margin-small-right'
+          >
+            <FontAwesomeIcon icon={faClipboard} />
           </a>
 
           <div className='uk-card-badge uk-label'>#{this.props.Cell.Id}</div>
